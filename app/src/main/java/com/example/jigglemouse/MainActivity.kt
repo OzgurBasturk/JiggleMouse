@@ -419,12 +419,12 @@ class MainActivity : AppCompatActivity() {
             updateCurrentNameText()
         }
 
-        binding.btnThemeSystem.setOnClickListener { setTheme(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) }
-        binding.btnThemeLight.setOnClickListener { setTheme(AppCompatDelegate.MODE_NIGHT_NO) }
-        binding.btnThemeDark.setOnClickListener { setTheme(AppCompatDelegate.MODE_NIGHT_YES) }
+        binding.btnThemeSystem.setOnClickListener { applyNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) }
+        binding.btnThemeLight.setOnClickListener { applyNightMode(AppCompatDelegate.MODE_NIGHT_NO) }
+        binding.btnThemeDark.setOnClickListener { applyNightMode(AppCompatDelegate.MODE_NIGHT_YES) }
     }
 
-    private fun setTheme(mode: Int) {
+    private fun applyNightMode(mode: Int) {
         AppCompatDelegate.setDefaultNightMode(mode)
     }
 
