@@ -1,0 +1,145 @@
+<resources>
+    <string name="app_name">JiggleMouse</string>
+
+    <!-- General / connection -->
+    <string name="status_starting">Starting Bluetooth HID service…</string>
+    <string name="connect">Connect</string>
+    <string name="connecting">Connecting…</string>
+    <string name="connected_simple">Connected.</string>
+    <string name="connected_to_mouse">Connected to %1$s as a mouse.</string>
+    <string name="disconnected">Disconnected.</string>
+    <string name="ready_pick_device">Ready — Scan or pick a device, then Connect.</string>
+    <string name="hid_service_stopped">HID service stopped.</string>
+    <string name="error_prefix">Error: %1$s</string>
+    <string name="permission_denied">Bluetooth/notification permission denied — can\'t continue.</string>
+    <string name="no_device_selected">No device selected</string>
+    <string name="no_bluetooth_adapter">No Bluetooth adapter</string>
+    <string name="missing_scan_permission">Missing permission to scan for devices.</string>
+    <string name="missing_paired_permission">Missing permission to read paired devices.</string>
+    <string name="missing_name_permission">Missing permission to change Bluetooth name.</string>
+    <string name="paired_suffix"> (paired)</string>
+    <string name="new_suffix"> (new)</string>
+
+    <!-- Scanning -->
+    <string name="scan">Scan for nearby devices</string>
+    <string name="scanning_button">Scanning…</string>
+    <string name="scanning_status">Scanning for nearby devices (about 12s)…</string>
+    <string name="scan_finished">Scan finished. %1$d device(s) found — pick one and Connect.</string>
+
+    <!-- Jiggle mode -->
+    <string name="jiggle_label">Jiggle cursor periodically</string>
+    <string name="jiggle_mode_label">Jiggle style</string>
+    <string name="jiggle_mode_silent">Silent (tiny 2px twitch)</string>
+    <string name="jiggle_mode_human">Human-like (short curved drift)</string>
+    <string name="jiggle_mode_active">Active work (multiple moves, like actual use)</string>
+    <string name="mode_name_silent">silent</string>
+    <string name="mode_name_human">human-like</string>
+    <string name="mode_name_active">active work</string>
+    <string name="last_jiggle">Last jiggle: %1$s</string>
+    <string name="background_note">Jiggling continues with the screen off or the app backgrounded, via a persistent notification.</string>
+
+    <!-- Interval -->
+    <string name="interval_label">Time between jiggles</string>
+    <string name="interval_note">A random value between these is picked each time. Suggested: 30–90s — but you can set any values you like, including making min and max equal for a fixed interval.</string>
+    <string name="interval_min">Min seconds</string>
+    <string name="interval_max">Max seconds</string>
+    <string name="invalid_interval">Enter a valid whole number of seconds in both fields.</string>
+
+    <!-- Name spoofing -->
+    <string name="spoof_name_label">Bluetooth device name</string>
+    <string name="spoof_name_note">Changes your phone\'s Bluetooth name (visible to all Bluetooth devices, not just this connection) to look like a real mouse. Restore it when you\'re done.</string>
+    <string name="spoof_name_custom_hint">Enter a custom name</string>
+    <string name="spoof_name_custom_option">Custom…</string>
+    <string name="apply_name">Apply name</string>
+    <string name="restore_name">Restore original name</string>
+    <string name="current_name_prefix">Current Bluetooth name: %1$s</string>
+    <string name="name_applied_toast">Bluetooth name changed to %1$s</string>
+    <string name="name_restored_toast">Restored original Bluetooth name</string>
+    <string-array name="preset_mouse_names">
+        <item>Logitech M185</item>
+        <item>Logitech MX Master 3</item>
+        <item>Microsoft Bluetooth Mouse</item>
+        <item>Dell Wireless Mouse WM126</item>
+        <item>HP Bluetooth Mouse Z5000</item>
+        <item>Razer Pro Click</item>
+        <item>Apple Magic Mouse</item>
+        <item>SteelSeries Prime Mini Wireless</item>
+    </string-array>
+
+    <!-- Navigation -->
+    <string name="open_trackpad">Open trackpad</string>
+    <string name="open_keyboard">Open keyboard mode</string>
+
+    <!-- Trackpad -->
+    <string name="left_click">Left click</string>
+    <string name="right_click">Right click</string>
+    <string name="trackpad_ready">Connected — drag to move, tap buttons to click, two fingers to scroll.</string>
+    <string name="trackpad_not_connected">Not connected — connect a device on the main screen first.</string>
+
+    <!-- Keyboard -->
+    <string name="keyboard_type_hint">Type below — keystrokes are sent live to the connected computer.</string>
+    <string name="backspace">Backspace</string>
+    <string name="enter_key">Enter</string>
+    <string name="keyboard_ready">Ready — pick a paired device and connect.</string>
+    <string name="keyboard_connected">Connected to %1$s as a keyboard.</string>
+    <string name="keyboard_layout_note">Pick the keyboard layout your COMPUTER is set to (not your phone) — this determines which physical key positions produce which characters.</string>
+    <string name="layout_us">US QWERTY</string>
+    <string name="layout_tr">Turkish Q</string>
+
+    <string name="err_no_adapter">This device has no Bluetooth adapter</string>
+    <string name="err_missing_permission">Missing Bluetooth permission: %1$s</string>
+    <string name="err_not_ready">HID service isn\'t ready yet — wait a moment and try again.</string>
+    <string name="err_connect_rejected">Connect request was rejected immediately by the system.</string>
+
+    <!-- Notification -->
+    <string name="notif_channel_name">JiggleMouse status</string>
+    <string name="notif_ready">Ready</string>
+    <string name="notif_jiggling">Connected — jiggling (%1$s)</string>
+    <string name="notif_paused">Connected — jiggle paused</string>
+    <string name="notif_disconnected">Disconnected</string>
+    <string name="notif_connected_to">Connected to %1$s</string>
+    <string name="notif_paused_keyboard">Paused for keyboard mode</string>
+    <string name="notif_outside_schedule">Connected — waiting for scheduled window</string>
+
+    <!-- Reconnect -->
+    <string name="reconnecting">Reconnecting… (attempt %1$d)</string>
+    <string name="auto_reconnect_label">Auto-reconnect if connection drops</string>
+
+    <!-- Battery optimization -->
+    <string name="battery_opt_title">Background reliability</string>
+    <string name="battery_opt_message">Your phone may stop this app in the background to save battery, which would silently stop jiggling. Exempting it fixes this.</string>
+    <string name="battery_opt_button">Disable battery optimization for this app</string>
+    <string name="battery_opt_done">Already exempted from battery optimization.</string>
+
+    <!-- Schedule -->
+    <string name="schedule_label">Schedule</string>
+    <string name="schedule_enable">Only jiggle during a set time window</string>
+    <string name="schedule_start">Start time</string>
+    <string name="schedule_end">End time</string>
+    <string name="schedule_weekdays_only">Weekdays only (Mon–Fri)</string>
+    <string name="schedule_note">Outside this window, the connection stays alive but jiggling pauses automatically.</string>
+
+    <!-- Profiles -->
+    <string name="profiles_label">Saved devices</string>
+    <string name="profile_name_hint">Name this device (e.g. \"Work PC\")</string>
+    <string name="btn_save_profile">Save current connection</string>
+    <string name="btn_delete_profile">Delete</string>
+    <string name="profile_saved_toast">Saved as \"%1$s\"</string>
+    <string name="no_profiles">No saved devices yet — connect to one, then tap Save.</string>
+    <string name="connect_to_profile">Connect</string>
+
+    <!-- Dark mode -->
+    <string name="dark_mode_label">Appearance</string>
+    <string name="dark_mode_system">System</string>
+    <string name="dark_mode_light">Light</string>
+    <string name="dark_mode_dark">Dark</string>
+
+    <!-- Tabs -->
+    <string name="tab_connection">Connection</string>
+    <string name="tab_jiggle">Jiggle</string>
+    <string name="tab_advanced">Advanced</string>
+
+    <!-- Live indicator -->
+    <string name="currently_running">Running now: %1$s</string>
+    <string name="currently_paused_schedule">Connected — outside scheduled hours, paused</string>
+</resources>

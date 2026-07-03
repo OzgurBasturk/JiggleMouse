@@ -1,0 +1,133 @@
+<resources>
+    <!-- General / connection -->
+    <string name="status_starting">Bluetooth HID servisi başlatılıyor…</string>
+    <string name="connect">Bağlan</string>
+    <string name="connecting">Bağlanıyor…</string>
+    <string name="connected_simple">Bağlandı.</string>
+    <string name="connected_to_mouse">%1$s cihazına fare olarak bağlandı.</string>
+    <string name="disconnected">Bağlantı kesildi.</string>
+    <string name="ready_pick_device">Hazır — Tara veya bir cihaz seçin, sonra Bağlan\'a dokunun.</string>
+    <string name="hid_service_stopped">HID servisi durduruldu.</string>
+    <string name="error_prefix">Hata: %1$s</string>
+    <string name="permission_denied">Bluetooth/bildirim izni reddedildi — devam edilemiyor.</string>
+    <string name="no_device_selected">Cihaz seçilmedi</string>
+    <string name="no_bluetooth_adapter">Bluetooth adaptörü bulunamadı</string>
+    <string name="missing_scan_permission">Cihaz taramak için izin eksik.</string>
+    <string name="missing_paired_permission">Eşleştirilmiş cihazları okumak için izin eksik.</string>
+    <string name="missing_name_permission">Bluetooth adını değiştirmek için izin eksik.</string>
+    <string name="paired_suffix"> (eşleştirilmiş)</string>
+    <string name="new_suffix"> (yeni)</string>
+
+    <!-- Scanning -->
+    <string name="scan">Yakındaki cihazları tara</string>
+    <string name="scanning_button">Taranıyor…</string>
+    <string name="scanning_status">Yakındaki cihazlar taranıyor (yaklaşık 12sn)…</string>
+    <string name="scan_finished">Tarama tamamlandı. %1$d cihaz bulundu — birini seçip Bağlan\'a dokunun.</string>
+
+    <!-- Jiggle mode -->
+    <string name="jiggle_label">İmleci periyodik olarak hareket ettir</string>
+    <string name="jiggle_mode_label">Hareket stili</string>
+    <string name="jiggle_mode_silent">Sessiz (küçük 2px titreşim)</string>
+    <string name="jiggle_mode_human">İnsan gibi (kısa, kavisli hareket)</string>
+    <string name="jiggle_mode_active">Aktif çalışma (gerçek kullanım gibi çoklu hareket)</string>
+    <string name="mode_name_silent">sessiz</string>
+    <string name="mode_name_human">insan gibi</string>
+    <string name="mode_name_active">aktif çalışma</string>
+    <string name="last_jiggle">Son hareket: %1$s</string>
+    <string name="background_note">Ekran kapalıyken veya uygulama arka plandayken hareket ettirme, kalıcı bir bildirim aracılığıyla devam eder.</string>
+
+    <!-- Interval -->
+    <string name="interval_label">Hareketler arası süre</string>
+    <string name="interval_note">Her seferinde bu iki değer arasında rastgele bir süre seçilir. Önerilen: 30–90sn — ancak istediğiniz herhangi bir değeri girebilirsiniz; sabit bir süre için min ve maks değerlerini eşit de yapabilirsiniz.</string>
+    <string name="interval_min">Min saniye</string>
+    <string name="interval_max">Maks saniye</string>
+    <string name="invalid_interval">Her iki alana da geçerli birer tam sayı saniye girin.</string>
+
+    <!-- Name spoofing -->
+    <string name="spoof_name_label">Bluetooth cihaz adı</string>
+    <string name="spoof_name_note">Telefonunuzun Bluetooth adını (yalnızca bu bağlantı için değil, tüm Bluetooth cihazlarına görünecek şekilde) gerçek bir fare gibi görünmesi için değiştirir. İşiniz bitince orijinal adı geri yükleyin.</string>
+    <string name="spoof_name_custom_hint">Özel bir isim girin</string>
+    <string name="spoof_name_custom_option">Özel…</string>
+    <string name="apply_name">Adı uygula</string>
+    <string name="restore_name">Orijinal adı geri yükle</string>
+    <string name="current_name_prefix">Mevcut Bluetooth adı: %1$s</string>
+    <string name="name_applied_toast">Bluetooth adı %1$s olarak değiştirildi</string>
+    <string name="name_restored_toast">Orijinal Bluetooth adı geri yüklendi</string>
+
+    <!-- Navigation -->
+    <string name="open_trackpad">Trackpad\'i aç</string>
+    <string name="open_keyboard">Klavye modunu aç</string>
+
+    <!-- Trackpad -->
+    <string name="left_click">Sol tık</string>
+    <string name="right_click">Sağ tık</string>
+    <string name="trackpad_ready">Bağlandı — hareket ettirmek için sürükleyin, tıklamak için düğmelere dokunun, kaydırmak için iki parmak kullanın.</string>
+    <string name="trackpad_not_connected">Bağlı değil — önce ana ekrandan bir cihaza bağlanın.</string>
+
+    <!-- Keyboard -->
+    <string name="keyboard_type_hint">Aşağıya yazın — tuş vuruşları bağlı bilgisayara anlık olarak gönderilir.</string>
+    <string name="backspace">Geri sil</string>
+    <string name="enter_key">Enter</string>
+    <string name="keyboard_ready">Hazır — eşleştirilmiş bir cihaz seçip bağlanın.</string>
+    <string name="keyboard_connected">%1$s cihazına klavye olarak bağlandı.</string>
+    <string name="keyboard_layout_note">BİLGİSAYARINIZIN ayarlı olduğu klavye düzenini seçin (telefonunuzunkini değil) — bu, hangi fiziksel tuş konumunun hangi karakteri üreteceğini belirler.</string>
+    <string name="layout_us">ABD QWERTY</string>
+    <string name="layout_tr">Türkçe Q</string>
+
+    <string name="err_no_adapter">Bu cihazda Bluetooth adaptörü yok</string>
+    <string name="err_missing_permission">Bluetooth izni eksik: %1$s</string>
+    <string name="err_not_ready">HID servisi henüz hazır değil — bir an bekleyip tekrar deneyin.</string>
+    <string name="err_connect_rejected">Bağlantı isteği sistem tarafından hemen reddedildi.</string>
+
+    <!-- Notification -->
+    <string name="notif_channel_name">JiggleMouse durumu</string>
+    <string name="notif_ready">Hazır</string>
+    <string name="notif_jiggling">Bağlandı — hareket ettiriliyor (%1$s)</string>
+    <string name="notif_paused">Bağlandı — hareket duraklatıldı</string>
+    <string name="notif_disconnected">Bağlantı kesildi</string>
+    <string name="notif_connected_to">%1$s cihazına bağlandı</string>
+    <string name="notif_paused_keyboard">Klavye modu için duraklatıldı</string>
+    <string name="notif_outside_schedule">Bağlandı — zamanlanmış pencere bekleniyor</string>
+
+    <!-- Reconnect -->
+    <string name="reconnecting">Yeniden bağlanıyor… (%1$d. deneme)</string>
+    <string name="auto_reconnect_label">Bağlantı koparsa otomatik yeniden bağlan</string>
+
+    <!-- Battery optimization -->
+    <string name="battery_opt_title">Arka planda güvenilirlik</string>
+    <string name="battery_opt_message">Telefonunuz pil tasarrufu için bu uygulamayı arka planda durdurabilir, bu da hareket ettirmeyi sessizce durdurur. Muafiyet vermek bunu düzeltir.</string>
+    <string name="battery_opt_button">Bu uygulama için pil optimizasyonunu kapat</string>
+    <string name="battery_opt_done">Pil optimizasyonundan zaten muaf.</string>
+
+    <!-- Schedule -->
+    <string name="schedule_label">Zamanlama</string>
+    <string name="schedule_enable">Yalnızca belirli bir zaman aralığında hareket ettir</string>
+    <string name="schedule_start">Başlangıç saati</string>
+    <string name="schedule_end">Bitiş saati</string>
+    <string name="schedule_weekdays_only">Yalnızca hafta içi (Pzt–Cum)</string>
+    <string name="schedule_note">Bu pencere dışında bağlantı açık kalır ancak hareket ettirme otomatik olarak duraklar.</string>
+
+    <!-- Profiles -->
+    <string name="profiles_label">Kayıtlı cihazlar</string>
+    <string name="profile_name_hint">Bu cihaza bir isim verin (örn. \"İş Bilgisayarı\")</string>
+    <string name="btn_save_profile">Mevcut bağlantıyı kaydet</string>
+    <string name="btn_delete_profile">Sil</string>
+    <string name="profile_saved_toast">\"%1$s\" olarak kaydedildi</string>
+    <string name="no_profiles">Henüz kayıtlı cihaz yok — birine bağlanıp Kaydet\'e dokunun.</string>
+    <string name="connect_to_profile">Bağlan</string>
+
+    <!-- Dark mode -->
+    <string name="dark_mode_label">Görünüm</string>
+    <string name="dark_mode_system">Sistem</string>
+    <string name="dark_mode_light">Açık</string>
+    <string name="dark_mode_dark">Koyu</string>
+
+    <!-- Tabs -->
+    <string name="tab_connection">Bağlantı</string>
+    <string name="tab_jiggle">Hareket</string>
+    <string name="tab_advanced">Gelişmiş</string>
+
+    <!-- Live indicator -->
+    <string name="currently_running">Şu anda çalışıyor: %1$s</string>
+    <string name="currently_paused_schedule">Bağlandı — zamanlama dışı, duraklatıldı</string>
+</resources>
