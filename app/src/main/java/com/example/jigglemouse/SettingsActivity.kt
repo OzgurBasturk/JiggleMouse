@@ -288,6 +288,8 @@ class SettingsActivity : AppCompatActivity() {
                 if (ok) getString(R.string.name_applied_toast, name) else getString(R.string.missing_name_permission),
                 Toast.LENGTH_SHORT
             ).show()
+            binding.nameReminderText.visibility = if (ok) View.VISIBLE else View.GONE
+            if (ok) binding.nameReminderText.text = getString(R.string.name_applied_reminder)
             updateCurrentNameText()
         }
         binding.btnRestoreName.setOnClickListener {

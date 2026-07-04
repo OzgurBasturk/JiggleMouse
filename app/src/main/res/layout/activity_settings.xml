@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/bg_card"
+        android:elevation="2dp"
         android:padding="16dp">
 
         <TextView
@@ -145,6 +146,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/bg_card"
+        android:elevation="2dp"
         android:padding="16dp">
 
         <TextView
@@ -263,6 +265,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/bg_card"
+        android:elevation="2dp"
         android:padding="16dp">
 
         <TextView
@@ -347,6 +350,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/bg_card"
+        android:elevation="2dp"
         android:padding="16dp">
 
         <TextView
@@ -408,6 +412,17 @@
             android:layout_marginTop="6dp"
             android:textSize="12sp"
             android:textColor="@color/text_muted" />
+
+        <TextView
+            android:id="@+id/name_reminder_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="12sp"
+            android:textColor="@color/warning_text"
+            android:background="@color/warning_bg"
+            android:padding="10dp"
+            android:visibility="gone" />
     </LinearLayout>
 
     <Space android:layout_width="match_parent" android:layout_height="16dp" />
@@ -418,6 +433,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/bg_card"
+        android:elevation="2dp"
         android:padding="16dp">
 
         <TextView
@@ -491,6 +507,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/bg_card"
+        android:elevation="2dp"
         android:padding="16dp">
 
         <Button

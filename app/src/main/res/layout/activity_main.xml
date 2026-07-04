@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true">
+
+<LinearLayout
+    android:id="@+id/root_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <!-- Top bar -->
@@ -12,16 +19,17 @@
         android:gravity="center_vertical"
         android:paddingStart="20dp"
         android:paddingEnd="8dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="8dp">
+        android:paddingTop="20dp"
+        android:paddingBottom="4dp">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/app_name"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.01" />
 
         <ImageButton
             android:id="@+id/btn_settings"
@@ -39,110 +47,160 @@
         android:padding="20dp">
 
         <!-- Status card -->
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/bg_card"
-            android:padding="18dp">
+            app:cardCornerRadius="20dp"
+            app:cardElevation="3dp"
+            app:strokeWidth="0dp">
 
-            <TextView
-                android:id="@+id/status_text"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="17sp"
-                android:textStyle="bold" />
+                android:orientation="vertical"
+                android:padding="20dp">
 
-            <TextView
-                android:id="@+id/running_indicator_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="13sp"
-                android:textColor="@color/brand_accent" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-            <Button
-                android:id="@+id/btn_connect_quick"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/main_reconnect" />
-        </LinearLayout>
+                    <View
+                        android:id="@+id/status_dot"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/dot_indicator" />
+
+                    <TextView
+                        android:id="@+id/status_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/running_indicator_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginStart="18dp"
+                    android:textSize="13sp"
+                    android:textColor="@color/brand_accent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_connect_quick"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    app:cornerRadius="14dp"
+                    android:text="@string/main_reconnect" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <Space android:layout_width="match_parent" android:layout_height="16dp" />
 
         <!-- Jiggle card -->
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/bg_card"
-            android:padding="18dp">
+            app:cardCornerRadius="20dp"
+            app:cardElevation="3dp"
+            app:strokeWidth="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:text="@string/jiggle_label" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/jiggle_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:enabled="false" />
+                </LinearLayout>
+
+                <Space android:layout_width="match_parent" android:layout_height="16dp" />
+
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/mode_toggle_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true"
+                    app:selectionRequired="true">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/mode_btn_silent"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="11sp"
+                        android:text="@string/mode_name_silent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/mode_btn_human"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="11sp"
+                        android:text="@string/mode_name_human" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/mode_btn_active"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="11sp"
+                        android:text="@string/mode_name_active" />
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                <Space android:layout_width="match_parent" android:layout_height="20dp" />
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:id="@+id/interval_label_text"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    android:text="@string/jiggle_label" />
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
 
-                <Switch
-                    android:id="@+id/jiggle_switch"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.slider.RangeSlider
+                    android:id="@+id/interval_slider"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false" />
+                    android:valueFrom="1"
+                    android:valueTo="300"
+                    android:stepSize="1" />
+
+                <TextView
+                    android:id="@+id/last_jiggle_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_muted" />
             </LinearLayout>
-
-            <Space android:layout_width="match_parent" android:layout_height="12dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/mode_btn_silent"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="4dp"
-                    android:textSize="11sp"
-                    android:text="@string/mode_name_silent" />
-
-                <Button
-                    android:id="@+id/mode_btn_human"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginHorizontal="4dp"
-                    android:textSize="11sp"
-                    android:text="@string/mode_name_human" />
-
-                <Button
-                    android:id="@+id/mode_btn_active"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="4dp"
-                    android:textSize="11sp"
-                    android:text="@string/mode_name_active" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/last_jiggle_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:textSize="12sp"
-                android:textColor="@color/text_muted" />
-        </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <Space android:layout_width="match_parent" android:layout_height="16dp" />
 
@@ -152,6 +210,8 @@
             android:layout_height="wrap_content"
             android:textSize="13sp"
             android:textColor="@color/text_muted"
+            android:textAllCaps="true"
+            android:letterSpacing="0.05"
             android:text="@string/quick_actions_label" />
 
         <Space android:layout_width="match_parent" android:layout_height="8dp" />
@@ -161,23 +221,52 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btn_open_trackpad"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="80dp"
                 android:layout_weight="1"
-                android:layout_marginEnd="4dp"
-                android:text="@string/open_trackpad" />
+                android:layout_marginEnd="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp"
+                app:rippleColor="@color/brand_accent">
 
-            <Button
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:text="@string/open_trackpad" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btn_open_keyboard"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="80dp"
                 android:layout_weight="1"
-                android:layout_marginStart="4dp"
-                android:text="@string/open_keyboard" />
+                android:layout_marginStart="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp"
+                app:rippleColor="@color/brand_accent">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:text="@string/open_keyboard" />
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
     </LinearLayout>
 
 </LinearLayout>
+</ScrollView>

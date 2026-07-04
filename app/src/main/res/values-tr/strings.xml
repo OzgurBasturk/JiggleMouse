@@ -41,6 +41,8 @@
     <string name="interval_note">Her seferinde bu iki değer arasında rastgele bir süre seçilir. Önerilen: 30–90sn — ancak istediğiniz herhangi bir değeri girebilirsiniz; sabit bir süre için min ve maks değerlerini eşit de yapabilirsiniz.</string>
     <string name="interval_min">Min saniye</string>
     <string name="interval_max">Maks saniye</string>
+    <string name="interval_fixed_label">Her %1$d saniyede bir hareket</string>
+    <string name="interval_range_label">Her %1$d–%2$d saniyede bir hareket</string>
     <string name="invalid_interval">Her iki alana da geçerli birer tam sayı saniye girin.</string>
 
     <!-- Name spoofing -->
@@ -52,6 +54,7 @@
     <string name="restore_name">Orijinal adı geri yükle</string>
     <string name="current_name_prefix">Mevcut Bluetooth adı: %1$s</string>
     <string name="name_applied_toast">Bluetooth adı %1$s olarak değiştirildi</string>
+    <string name="name_applied_reminder">Şimdi telefonunuzun Bluetooth\'unu kapatıp tekrar açın (Ayarlar → Bluetooth) — değişiklik başarılı olsa da birçok telefon siz bunu yapana kadar eski ismi önbellekte tutar.</string>
     <string name="name_restored_toast">Orijinal Bluetooth adı geri yüklendi</string>
 
     <!-- Navigation -->
@@ -92,7 +95,7 @@
     <string name="btn_grant_permissions">İzinleri ver</string>
     <string name="permissions_granted">İzinler verildi ✓</string>
     <string name="onboarding_step2_title">2. Cihaz kimliği</string>
-    <string name="onboarding_step2_desc">Bilgisayarınızın göreceği bir isim seçin — eşleştirildikten sonra geriye dönük değiştirilemediği için bunu bağlanmadan önce ayarlayın.</string>
+    <string name="onboarding_step2_desc">Bilgisayarınızın göreceği bir isim seçin — eşleştirildikten sonra geriye dönük değiştirilemediği için bunu bağlanmadan önce ayarlayın. Uyguladıktan sonra gerçekten etkili olması için telefonunuzun Bluetooth\'unu kapatıp açın.</string>
     <string name="onboarding_step3_title">3. Bağlan</string>
     <string name="onboarding_step3_desc">Bilgisayarınızın Bluetooth\'unun açık ve keşfedilebilir olduğundan emin olun, sonra tarayıp bağlanın.</string>
     <string name="btn_finish_setup">Kurulumu tamamla</string>

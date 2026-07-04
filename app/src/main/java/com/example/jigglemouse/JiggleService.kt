@@ -305,6 +305,11 @@ class JiggleService : Service(), HidCombo.Listener {
             }
             val ok = adapter.setName(name)
             if (ok) prefs.edit().putString(KEY_SDP_NAME, name).apply()
+            // NOTE: setName() succeeding does NOT guarantee the new name is
+            // broadcast to nearby devices immediately — on many phones the
+            // Bluetooth radio caches the old name in its inquiry response
+            // until Bluetooth is toggled off and on. The UI surfaces this
+            // as an explicit instruction after a successful name change.
             ok
         } catch (e: SecurityException) {
             statusListener?.onError(getString(R.string.missing_name_permission))

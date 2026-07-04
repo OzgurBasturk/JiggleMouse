@@ -43,6 +43,8 @@
     <string name="interval_note">A random value between these is picked each time. Suggested: 30–90s — but you can set any values you like, including making min and max equal for a fixed interval.</string>
     <string name="interval_min">Min seconds</string>
     <string name="interval_max">Max seconds</string>
+    <string name="interval_fixed_label">Jiggle every %1$ds</string>
+    <string name="interval_range_label">Jiggle every %1$d–%2$ds</string>
     <string name="invalid_interval">Enter a valid whole number of seconds in both fields.</string>
 
     <!-- Name spoofing -->
@@ -54,6 +56,7 @@
     <string name="restore_name">Restore original name</string>
     <string name="current_name_prefix">Current Bluetooth name: %1$s</string>
     <string name="name_applied_toast">Bluetooth name changed to %1$s</string>
+    <string name="name_applied_reminder">Now turn your phone\'s Bluetooth off and back on (Settings → Bluetooth) — many phones cache the old name until you do, even though the change succeeded.</string>
     <string name="name_restored_toast">Restored original Bluetooth name</string>
     <string-array name="preset_mouse_names">
         <item>Logitech MK235 Wireless Combo</item>
@@ -104,7 +107,7 @@
     <string name="btn_grant_permissions">Grant permissions</string>
     <string name="permissions_granted">Permissions granted ✓</string>
     <string name="onboarding_step2_title">2. Device identity</string>
-    <string name="onboarding_step2_desc">Pick a name your computer will see — set this before connecting, since it can\'t be changed retroactively once paired.</string>
+    <string name="onboarding_step2_desc">Pick a name your computer will see — set this before connecting, since it can\'t be changed retroactively once paired. After applying, toggle your phone\'s Bluetooth off and on for it to actually take effect.</string>
     <string name="onboarding_step3_title">3. Connect</string>
     <string name="onboarding_step3_desc">Make sure your computer\'s Bluetooth is on and discoverable, then scan and connect.</string>
     <string name="btn_finish_setup">Finish setup</string>
