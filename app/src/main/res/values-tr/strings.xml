@@ -69,6 +69,7 @@
     <string name="backspace">Geri sil</string>
     <string name="enter_key">Enter</string>
     <string name="keyboard_ready">Hazır — eşleştirilmiş bir cihaz seçip bağlanın.</string>
+    <string name="keyboard_ready_connected">Bağlandı — tuş vuruşlarını canlı göndermek için aşağıya yazın.</string>
     <string name="keyboard_connected">%1$s cihazına klavye olarak bağlandı.</string>
     <string name="keyboard_layout_note">BİLGİSAYARINIZIN ayarlı olduğu klavye düzenini seçin (telefonunuzunkini değil) — bu, hangi fiziksel tuş konumunun hangi karakteri üreteceğini belirler.</string>
     <string name="layout_us">ABD QWERTY</string>
@@ -81,6 +82,35 @@
 
     <!-- Notification -->
     <string name="notif_channel_name">JiggleMouse durumu</string>
+    <string name="notif_stop_action">Durdur</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_welcome">JiggleMouse\'a Hoş Geldiniz</string>
+    <string name="onboarding_intro">Telefonunuzu kablosuz fare + klavye kombosu olarak ayarlayalım. Bu yalnızca bir dakika sürer.</string>
+    <string name="onboarding_step1_title">1. İzinler</string>
+    <string name="onboarding_step1_desc">Bilgisayarınıza bağlanmak için Bluetooth erişimi gerekir.</string>
+    <string name="btn_grant_permissions">İzinleri ver</string>
+    <string name="permissions_granted">İzinler verildi ✓</string>
+    <string name="onboarding_step2_title">2. Cihaz kimliği</string>
+    <string name="onboarding_step2_desc">Bilgisayarınızın göreceği bir isim seçin — eşleştirildikten sonra geriye dönük değiştirilemediği için bunu bağlanmadan önce ayarlayın.</string>
+    <string name="onboarding_step3_title">3. Bağlan</string>
+    <string name="onboarding_step3_desc">Bilgisayarınızın Bluetooth\'unun açık ve keşfedilebilir olduğundan emin olun, sonra tarayıp bağlanın.</string>
+    <string name="btn_finish_setup">Kurulumu tamamla</string>
+    <string name="btn_skip_for_now">Şimdilik atla</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ayarlar</string>
+    <string name="btn_stop_everything">JiggleMouse\'u tamamen durdur</string>
+    <string name="stop_everything_confirm_title">Tamamen durdurulsun mu?</string>
+    <string name="stop_everything_confirm_message">Bu, bağlantıyı keser, hareket ettirmeyi durdurur ve arka plan servisini kapatır. Bir dahaki sefere manuel olarak yeniden bağlanmanız gerekir.</string>
+    <string name="btn_redo_setup">İlk kurulumu tekrarla</string>
+    <string name="yes">Evet</string>
+    <string name="cancel">İptal</string>
+
+    <!-- Main (simplified) -->
+    <string name="main_reconnect">Yeniden bağlan</string>
+    <string name="main_connect_a_device">Bir cihaza bağlan</string>
+    <string name="quick_actions_label">Hızlı işlemler</string>
     <string name="notif_ready">Hazır</string>
     <string name="notif_jiggling">Bağlandı — hareket ettiriliyor (%1$s)</string>
     <string name="notif_paused">Bağlandı — hareket duraklatıldı</string>

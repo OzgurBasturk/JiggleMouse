@@ -56,14 +56,14 @@
     <string name="name_applied_toast">Bluetooth name changed to %1$s</string>
     <string name="name_restored_toast">Restored original Bluetooth name</string>
     <string-array name="preset_mouse_names">
-        <item>Logitech M185</item>
-        <item>Logitech MX Master 3</item>
-        <item>Microsoft Bluetooth Mouse</item>
-        <item>Dell Wireless Mouse WM126</item>
-        <item>HP Bluetooth Mouse Z5000</item>
-        <item>Razer Pro Click</item>
-        <item>Apple Magic Mouse</item>
-        <item>SteelSeries Prime Mini Wireless</item>
+        <item>Logitech MK235 Wireless Combo</item>
+        <item>Logitech MK270 Wireless Combo</item>
+        <item>Microsoft Wireless Desktop 900</item>
+        <item>Dell Wireless Keyboard and Mouse KM636</item>
+        <item>HP Wireless Combo 850</item>
+        <item>Rapoo X1800S Combo</item>
+        <item>Logitech MK540 Advanced</item>
+        <item>Anker Wireless Combo</item>
     </string-array>
 
     <!-- Navigation -->
@@ -81,6 +81,7 @@
     <string name="backspace">Backspace</string>
     <string name="enter_key">Enter</string>
     <string name="keyboard_ready">Ready — pick a paired device and connect.</string>
+    <string name="keyboard_ready_connected">Connected — type below to send keystrokes live.</string>
     <string name="keyboard_connected">Connected to %1$s as a keyboard.</string>
     <string name="keyboard_layout_note">Pick the keyboard layout your COMPUTER is set to (not your phone) — this determines which physical key positions produce which characters.</string>
     <string name="layout_us">US QWERTY</string>
@@ -93,6 +94,35 @@
 
     <!-- Notification -->
     <string name="notif_channel_name">JiggleMouse status</string>
+    <string name="notif_stop_action">Stop</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_welcome">Welcome to JiggleMouse</string>
+    <string name="onboarding_intro">Let\'s get your phone set up as a wireless mouse + keyboard combo. This only takes a minute.</string>
+    <string name="onboarding_step1_title">1. Permissions</string>
+    <string name="onboarding_step1_desc">Bluetooth access is needed to connect to your computer.</string>
+    <string name="btn_grant_permissions">Grant permissions</string>
+    <string name="permissions_granted">Permissions granted ✓</string>
+    <string name="onboarding_step2_title">2. Device identity</string>
+    <string name="onboarding_step2_desc">Pick a name your computer will see — set this before connecting, since it can\'t be changed retroactively once paired.</string>
+    <string name="onboarding_step3_title">3. Connect</string>
+    <string name="onboarding_step3_desc">Make sure your computer\'s Bluetooth is on and discoverable, then scan and connect.</string>
+    <string name="btn_finish_setup">Finish setup</string>
+    <string name="btn_skip_for_now">Skip for now</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="btn_stop_everything">Stop JiggleMouse completely</string>
+    <string name="stop_everything_confirm_title">Stop completely?</string>
+    <string name="stop_everything_confirm_message">This disconnects, stops jiggling, and shuts down the background service. You\'ll need to reconnect manually next time.</string>
+    <string name="btn_redo_setup">Redo first-time setup</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Main (simplified) -->
+    <string name="main_reconnect">Reconnect</string>
+    <string name="main_connect_a_device">Connect a device</string>
+    <string name="quick_actions_label">Quick actions</string>
     <string name="notif_ready">Ready</string>
     <string name="notif_jiggling">Connected — jiggling (%1$s)</string>
     <string name="notif_paused">Connected — jiggle paused</string>

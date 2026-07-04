@@ -16,7 +16,7 @@ import kotlin.math.roundToInt
 /**
  * Turns the app into a real trackpad: drag on the surface to move the
  * cursor, tap the buttons to left/right click. Uses the same connected
- * HidMouse instance the JiggleService already owns — no separate connection.
+ * HidCombo instance the JiggleService already owns — no separate connection.
  */
 class TrackpadActivity : AppCompatActivity() {
 
@@ -66,7 +66,7 @@ class TrackpadActivity : AppCompatActivity() {
     }
 
     private fun handleTouch(event: MotionEvent) {
-        val hidMouse = service?.hidMouse ?: return
+        val hidMouse = service?.hidCombo ?: return
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
                 lastX = averageX(event)
@@ -104,7 +104,7 @@ class TrackpadActivity : AppCompatActivity() {
         (0 until event.pointerCount).map { event.getY(it) }.average().toFloat()
 
     private fun performClick(left: Boolean) {
-        val hidMouse = service?.hidMouse ?: return
+        val hidMouse = service?.hidCombo ?: return
         hidMouse.pressButton(left = left, right = !left)
         handler.postDelayed({ hidMouse.releaseButtons() }, 60)
     }

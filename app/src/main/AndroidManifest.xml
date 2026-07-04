@@ -41,6 +41,8 @@
 
         <activity android:name=".TrackpadActivity" android:exported="false" />
         <activity android:name=".KeyboardActivity" android:exported="false" />
+        <activity android:name=".OnboardingActivity" android:exported="false" />
+        <activity android:name=".SettingsActivity" android:exported="false" />
 
         <service
             android:name=".JiggleService"

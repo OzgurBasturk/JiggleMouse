@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="brand_primary">#3F51B5</color>
+    <color name="brand_primary_dark">#303F9F</color>
+    <color name="brand_accent">#00BFA5</color>
+    <color name="card_bg_light">#F5F6FA</color>
+    <color name="card_bg_dark">#1E2128</color>
+    <color name="text_muted">#8A8F98</color>
+    <color name="success">#2E7D32</color>
+    <color name="warning_bg">#FFF3CD</color>
+    <color name="warning_text">#7A5B00</color>
+</resources>

@@ -25,13 +25,13 @@ enum class JiggleMode { SILENT, HUMAN_LIKE, ACTIVE_WORK }
 data class DeviceProfile(val name: String, val address: String)
 
 /**
- * Owns the BluetoothHidDevice connection and the jiggle timer. Runs as a
- * foreground service (with a persistent notification, as Android requires)
- * so jiggling keeps working with the screen off or the app backgrounded.
- * Also owns settings persistence, auto-reconnect, saved device profiles,
- * and the optional jiggle schedule window.
+ * Owns the single persistent HidCombo connection and the jiggle timer. Runs
+ * as a foreground service (with a persistent notification, as Android
+ * requires) so jiggling keeps working with the screen off or the app
+ * backgrounded. Also owns settings persistence, auto-reconnect, saved
+ * device profiles, and the optional jiggle schedule window.
  */
-class JiggleService : Service(), HidMouse.Listener {
+class JiggleService : Service(), HidCombo.Listener {
 
     interface StatusListener {
         fun onRegistered() {}
@@ -49,7 +49,7 @@ class JiggleService : Service(), HidMouse.Listener {
     private val binder = LocalBinder()
     private var statusListener: StatusListener? = null
 
-    lateinit var hidMouse: HidMouse
+    lateinit var hidCombo: HidCombo
         private set
 
     private val handler = Handler(Looper.getMainLooper())
@@ -64,8 +64,8 @@ class JiggleService : Service(), HidMouse.Listener {
 
     private val prefs by lazy { getSharedPreferences("jigglemouse_prefs", MODE_PRIVATE) }
 
-    val isConnected: Boolean get() = ::hidMouse.isInitialized && hidMouse.isConnected
-    val isRegistered: Boolean get() = ::hidMouse.isInitialized && hidMouse.isRegistered
+    val isConnected: Boolean get() = ::hidCombo.isInitialized && hidCombo.isConnected
+    val isRegistered: Boolean get() = ::hidCombo.isInitialized && hidCombo.isRegistered
     val isJiggling: Boolean get() = jiggleRunning
 
     // --- Lifecycle ---------------------------------------------------
@@ -73,12 +73,33 @@ class JiggleService : Service(), HidMouse.Listener {
     override fun onCreate() {
         super.onCreate()
         restoreSettings()
-        hidMouse = HidMouse(applicationContext, this)
-        hidMouse.start()
+        startHidCombo()
         createNotificationChannel()
     }
 
+    private fun startHidCombo() {
+        hidCombo = HidCombo(applicationContext, this, prefs.getString(KEY_SDP_NAME, "JiggleMouse Combo")!!)
+        hidCombo.start()
+        // Safeguard: if registration never completes (a stuck Bluetooth
+        // profile proxy is a known cause), tear down and retry once instead
+        // of leaving the user stuck on "Starting..." forever.
+        handler.postDelayed(registrationWatchdog, 8_000L)
+    }
+
+    private val registrationWatchdog = Runnable {
+        if (!isRegistered && registrationRetries < 2) {
+            registrationRetries++
+            hidCombo.stop()
+            startHidCombo()
+        }
+    }
+    private var registrationRetries = 0
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == ACTION_STOP) {
+            stopEverything()
+            return START_NOT_STICKY
+        }
         startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.notif_ready)))
         return START_STICKY
     }
@@ -87,6 +108,15 @@ class JiggleService : Service(), HidMouse.Listener {
 
     fun setStatusListener(listener: StatusListener?) {
         statusListener = listener
+    }
+
+    /** Fully shuts down: disconnects, unregisters the HID app, stops the service. */
+    fun stopEverything() {
+        stopJiggle()
+        handler.removeCallbacksAndMessages(null)
+        if (::hidCombo.isInitialized) hidCombo.stop()
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        stopSelf()
     }
 
     // --- Settings persistence ----------------------------------------
@@ -104,6 +134,9 @@ class JiggleService : Service(), HidMouse.Listener {
         lastDeviceAddress = prefs.getString(KEY_LAST_DEVICE, null)
     }
 
+    val onboardingComplete: Boolean get() = prefs.getBoolean(KEY_ONBOARDING_DONE, false)
+    fun setOnboardingComplete(done: Boolean) = prefs.edit().putBoolean(KEY_ONBOARDING_DONE, done).apply()
+
     // --- Connection ----------------------------------------------------
 
     private var lastDeviceAddress: String? = null
@@ -115,14 +148,27 @@ class JiggleService : Service(), HidMouse.Listener {
         manualDisconnect = false
         lastDeviceAddress = device.address
         prefs.edit().putString(KEY_LAST_DEVICE, device.address).apply()
-        hidMouse.connectTo(device)
+        hidCombo.connectTo(device)
+    }
+
+    val lastKnownDeviceAddress: String? get() = lastDeviceAddress
+
+    /** Attempts to reconnect to whatever device was last connected, if any. Returns false if none is known. */
+    fun connectToLastDevice(): Boolean {
+        val address = lastDeviceAddress ?: return false
+        return try {
+            val bm = getSystemService(BluetoothManager::class.java)
+            val device = bm.adapter?.getRemoteDevice(address) ?: return false
+            connectTo(device)
+            true
+        } catch (e: Exception) { false }
     }
 
     fun disconnect() {
         manualDisconnect = true
         handler.removeCallbacks(reconnectRunnable)
         stopJiggle()
-        hidMouse.disconnect()
+        hidCombo.disconnect()
     }
 
     fun setAutoReconnectEnabled(enabled: Boolean) {
@@ -141,7 +187,7 @@ class JiggleService : Service(), HidMouse.Listener {
                 val device = bm.adapter?.getRemoteDevice(address) ?: return
                 reconnectAttempt++
                 statusListener?.onReconnecting(reconnectAttempt)
-                hidMouse.connectTo(device)
+                hidCombo.connectTo(device)
             } catch (e: Exception) {
                 // ignore, will retry
             }
@@ -163,18 +209,14 @@ class JiggleService : Service(), HidMouse.Listener {
         val list = listProfiles().filter { it.address != address }.toMutableList()
         list.add(DeviceProfile(name, address))
         val arr = JSONArray()
-        list.forEach { p ->
-            arr.put(JSONObject().apply { put("name", p.name); put("address", p.address) })
-        }
+        list.forEach { p -> arr.put(JSONObject().apply { put("name", p.name); put("address", p.address) }) }
         prefs.edit().putString(KEY_PROFILES, arr.toString()).apply()
     }
 
     fun removeProfile(address: String) {
         val list = listProfiles().filter { it.address != address }
         val arr = JSONArray()
-        list.forEach { p ->
-            arr.put(JSONObject().apply { put("name", p.name); put("address", p.address) })
-        }
+        list.forEach { p -> arr.put(JSONObject().apply { put("name", p.name); put("address", p.address) }) }
         prefs.edit().putString(KEY_PROFILES, arr.toString()).apply()
     }
 
@@ -196,8 +238,6 @@ class JiggleService : Service(), HidMouse.Listener {
         prefs.edit().putString(KEY_MODE, mode.name).apply()
     }
 
-    /** Sets the randomized min/max wait between jiggles, in seconds. min may equal max
-     *  for a fixed interval; only constraint is min <= max (auto-swapped if reversed). */
     fun setIntervalSeconds(minSec: Int, maxSec: Int) {
         val a = minSec.coerceAtLeast(1)
         val b = maxSec.coerceAtLeast(1)
@@ -237,12 +277,11 @@ class JiggleService : Service(), HidMouse.Listener {
             .apply()
     }
 
-    /** True if jiggling should be actively happening right now, given the schedule. */
     fun isWithinSchedule(): Boolean {
         if (!scheduleEnabled) return true
         val cal = Calendar.getInstance()
         val nowMin = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)
-        val dow = cal.get(Calendar.DAY_OF_WEEK) // Sunday=1 .. Saturday=7
+        val dow = cal.get(Calendar.DAY_OF_WEEK)
         if (scheduleWeekdaysOnly && (dow == Calendar.SUNDAY || dow == Calendar.SATURDAY)) return false
         return if (scheduleStartMin <= scheduleEndMin) {
             nowMin in scheduleStartMin..scheduleEndMin
@@ -251,33 +290,25 @@ class JiggleService : Service(), HidMouse.Listener {
         }
     }
 
-    // --- Keyboard-mode isolation ------------------------------------
-
-    fun releaseForKeyboardMode() {
-        handler.removeCallbacks(reconnectRunnable)
-        stopJiggle()
-        if (::hidMouse.isInitialized) hidMouse.stop()
-        updateNotification(getString(R.string.notif_paused_keyboard))
-    }
-
-    fun reclaimMouseMode() {
-        hidMouse = HidMouse(applicationContext, this)
-        hidMouse.start()
-        updateNotification(getString(R.string.notif_ready))
-    }
-
     // --- Bluetooth name spoofing -----------------------------------------
+    // NOTE: this only reliably shows up on a device your computer hasn't
+    // paired with yet — computers cache the name from first contact, so
+    // changing it after you're already bonded won't update what's displayed
+    // there. Set this before your first Connect for it to actually work.
 
-    fun spoofDeviceName(name: String) {
-        try {
+    fun spoofDeviceName(name: String): Boolean {
+        return try {
             val bm = getSystemService(BluetoothManager::class.java)
-            val adapter = bm.adapter ?: return
+            val adapter = bm.adapter ?: return false
             if (!prefs.contains(KEY_ORIGINAL_NAME)) {
                 prefs.edit().putString(KEY_ORIGINAL_NAME, adapter.name ?: "").apply()
             }
-            adapter.setName(name)
+            val ok = adapter.setName(name)
+            if (ok) prefs.edit().putString(KEY_SDP_NAME, name).apply()
+            ok
         } catch (e: SecurityException) {
             statusListener?.onError(getString(R.string.missing_name_permission))
+            false
         }
     }
 
@@ -288,14 +319,12 @@ class JiggleService : Service(), HidMouse.Listener {
             bm.adapter?.setName(original)
             prefs.edit().remove(KEY_ORIGINAL_NAME).apply()
         } catch (e: SecurityException) {
-            // ignore — nothing more we can do
+            // ignore
         }
     }
 
     val currentAdapterName: String?
-        get() = try {
-            (getSystemService(BluetoothManager::class.java)).adapter?.name
-        } catch (e: SecurityException) { null }
+        get() = try { (getSystemService(BluetoothManager::class.java)).adapter?.name } catch (e: SecurityException) { null }
 
     // --- Jiggle loop -------------------------------------------------
 
@@ -308,7 +337,7 @@ class JiggleService : Service(), HidMouse.Listener {
     private val jiggleTick = object : Runnable {
         override fun run() {
             if (!jiggleRunning) return
-            if (hidMouse.isConnected && isWithinSchedule()) {
+            if (hidCombo.isConnected && isWithinSchedule()) {
                 when (jiggleMode) {
                     JiggleMode.SILENT -> silentJiggle()
                     JiggleMode.HUMAN_LIKE -> humanLikeJiggle()
@@ -316,7 +345,7 @@ class JiggleService : Service(), HidMouse.Listener {
                 }
                 statusListener?.onJiggled()
                 updateNotification(getString(R.string.notif_jiggling, localizedModeName()))
-            } else if (hidMouse.isConnected && scheduleEnabled) {
+            } else if (hidCombo.isConnected && scheduleEnabled) {
                 updateNotification(getString(R.string.notif_outside_schedule))
             }
             val nextDelayMs = if (scheduleEnabled && !isWithinSchedule()) {
@@ -329,8 +358,8 @@ class JiggleService : Service(), HidMouse.Listener {
     }
 
     private fun silentJiggle() {
-        hidMouse.move(2, 0)
-        handler.postDelayed({ hidMouse.move(-2, 0) }, 80)
+        hidCombo.move(2, 0)
+        handler.postDelayed({ hidCombo.move(-2, 0) }, 80)
     }
 
     private fun activeWorkJiggle() {
@@ -357,15 +386,11 @@ class JiggleService : Service(), HidMouse.Listener {
                 handler.postDelayed({
                     val correctDx = -(dxTotal * (overshootFactor - 1)).toInt()
                     val correctDy = -(dyTotal * (overshootFactor - 1)).toInt()
-                    sendEasedPath(correctDx, correctDy, 4) {
-                        scheduleNextLeg(totalLegs, legNumber)
-                    }
+                    sendEasedPath(correctDx, correctDy, 4) { scheduleNextLeg(totalLegs, legNumber) }
                 }, Random.nextLong(60, 150))
             }
         } else {
-            sendEasedPath(dxTotal, dyTotal, steps) {
-                scheduleNextLeg(totalLegs, legNumber)
-            }
+            sendEasedPath(dxTotal, dyTotal, steps) { scheduleNextLeg(totalLegs, legNumber) }
         }
     }
 
@@ -383,9 +408,7 @@ class JiggleService : Service(), HidMouse.Listener {
         val dyTotal = (Math.sin(angle) * distance).toInt()
 
         sendEasedPath(dxTotal, dyTotal, steps) {
-            handler.postDelayed({
-                sendEasedPath(-dxTotal, -dyTotal, steps)
-            }, Random.nextLong(200, 500))
+            handler.postDelayed({ sendEasedPath(-dxTotal, -dyTotal, steps) }, Random.nextLong(200, 500))
         }
     }
 
@@ -403,7 +426,7 @@ class JiggleService : Service(), HidMouse.Listener {
             sentY = targetY
             val delay = (i * Random.nextLong(12, 28))
             handler.postDelayed({
-                if (stepDx != 0 || stepDy != 0) hidMouse.move(stepDx, stepDy)
+                if (stepDx != 0 || stepDy != 0) hidCombo.move(stepDx, stepDy)
                 if (i == steps) onDone?.invoke()
             }, delay)
         }
@@ -421,7 +444,9 @@ class JiggleService : Service(), HidMouse.Listener {
         jiggleRunning = false
         handler.removeCallbacksAndMessages(null)
         releaseWakeLock()
-        updateNotification(getString(if (isConnected) R.string.notif_paused else R.string.notif_disconnected))
+        if (::hidCombo.isInitialized) {
+            updateNotification(getString(if (isConnected) R.string.notif_paused else R.string.notif_disconnected))
+        }
     }
 
     // --- Wake lock ---------------------------------------------------
@@ -439,9 +464,11 @@ class JiggleService : Service(), HidMouse.Listener {
         wakeLock = null
     }
 
-    // --- HidMouse.Listener --------------------------------------------
+    // --- HidCombo.Listener --------------------------------------------
 
     override fun onRegistered() {
+        handler.removeCallbacks(registrationWatchdog)
+        registrationRetries = 0
         statusListener?.onRegistered()
     }
 
@@ -482,14 +509,19 @@ class JiggleService : Service(), HidMouse.Listener {
 
     private fun buildNotification(text: String): Notification {
         val openIntent = PendingIntent.getActivity(
-            this, 0, Intent(this, MainActivity::class.java),
-            PendingIntent.FLAG_IMMUTABLE
+            this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE
+        )
+        val stopIntent = PendingIntent.getService(
+            this, 0,
+            Intent(this, JiggleService::class.java).setAction(ACTION_STOP),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.app_name))
             .setContentText(text)
             .setSmallIcon(android.R.drawable.ic_menu_myplaces)
             .setContentIntent(openIntent)
+            .addAction(0, getString(R.string.notif_stop_action), stopIntent)
             .setOngoing(true)
             .build()
     }
@@ -502,14 +534,16 @@ class JiggleService : Service(), HidMouse.Listener {
     override fun onDestroy() {
         stopJiggle()
         handler.removeCallbacksAndMessages(null)
-        if (::hidMouse.isInitialized) hidMouse.stop()
+        if (::hidCombo.isInitialized) hidCombo.stop()
         super.onDestroy()
     }
 
     companion object {
+        const val ACTION_STOP = "com.example.jigglemouse.ACTION_STOP"
         private const val CHANNEL_ID = "jiggle_status"
         private const val NOTIFICATION_ID = 1
         private const val KEY_ORIGINAL_NAME = "original_bt_name"
+        private const val KEY_SDP_NAME = "sdp_name"
         private const val KEY_MODE = "jiggle_mode"
         private const val KEY_MIN_MS = "min_interval_ms"
         private const val KEY_MAX_MS = "max_interval_ms"
@@ -519,5 +553,6 @@ class JiggleService : Service(), HidMouse.Listener {
         private const val KEY_SCHED_START = "schedule_start_min"
         private const val KEY_SCHED_END = "schedule_end_min"
         private const val KEY_SCHED_WEEKDAYS = "schedule_weekdays_only"
+        private const val KEY_ONBOARDING_DONE = "onboarding_done"
     }
 }
