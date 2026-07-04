@@ -10,6 +10,8 @@ import android.content.Context
 import android.util.Log
 import java.util.concurrent.Executors
 
+enum class KeyboardLayout { US_QWERTY, TURKISH_Q }
+
 /**
  * A single Bluetooth HID app presenting BOTH a mouse and a keyboard via one
  * combined report descriptor (Report ID 1 = mouse, Report ID 2 = keyboard),
