@@ -15,7 +15,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -31,8 +30,9 @@ class SettingsActivity : AppCompatActivity() {
 
     private val knownDevices = LinkedHashMap<String, BluetoothDevice>()
     private var deviceList: List<BluetoothDevice> = emptyList()
+    private var selectedDevicePosition = -1
     private var profiles: List<DeviceProfile> = emptyList()
-    private var presetNames: List<String> = emptyList()
+    private var selectedProfilePosition = -1
 
     private var scheduleStartMin = 9 * 60
     private var scheduleEndMin = 18 * 60
@@ -52,7 +52,7 @@ class SettingsActivity : AppCompatActivity() {
                 BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
                     binding.btnScan.isEnabled = true
                     binding.btnScan.text = getString(R.string.scan)
-                    refreshDeviceSpinner()
+                    refreshDeviceDropdown()
                 }
             }
         }
@@ -74,7 +74,6 @@ class SettingsActivity : AppCompatActivity() {
         setupConnectionSection()
         setupJiggleSection()
         setupScheduleSection()
-        setupIdentitySection()
         setupAppearanceSection()
         setupDangerZone()
 
@@ -84,6 +83,7 @@ class SettingsActivity : AppCompatActivity() {
         })
 
         bindService(Intent(this, JiggleService::class.java), serviceConnection, Context.BIND_AUTO_CREATE)
+        binding.rootContent.fadeInUp()
     }
 
     private fun bindServiceState() {
@@ -91,7 +91,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.autoReconnectSwitch.isChecked = svc.isAutoReconnectEnabled
         binding.minIntervalInput.setText(svc.minIntervalSeconds.toString())
         binding.maxIntervalInput.setText(svc.maxIntervalSeconds.toString())
-        binding.jiggleModeGroup.check(
+        binding.jiggleModeToggle.check(
             when (svc.jiggleMode) {
                 JiggleMode.HUMAN_LIKE -> R.id.mode_human
                 JiggleMode.ACTIVE_WORK -> R.id.mode_active
@@ -104,22 +104,29 @@ class SettingsActivity : AppCompatActivity() {
         binding.scheduleDetails.visibility = if (svc.scheduleEnabled) View.VISIBLE else View.GONE
         binding.scheduleWeekdaysCheckbox.isChecked = svc.scheduleWeekdaysOnly
         updateScheduleButtonLabels()
-        updateCurrentNameText()
         loadPairedDevices()
-        refreshProfilesSpinner()
+        refreshProfilesDropdown()
+
+        binding.themeToggleGroup.check(
+            when (AppCompatDelegate.getDefaultNightMode()) {
+                AppCompatDelegate.MODE_NIGHT_NO -> R.id.btn_theme_light
+                AppCompatDelegate.MODE_NIGHT_YES -> R.id.btn_theme_dark
+                else -> R.id.btn_theme_system
+            }
+        )
     }
 
     // --- Connection & profiles -----------------------------------------
 
     private fun setupConnectionSection() {
-        binding.btnScan.setOnClickListener { startScan() }
-        binding.btnConnect.setOnClickListener { connectToSelected() }
+        binding.btnScan.setOnClickListener { it.pulseOnce(); startScan() }
+        binding.btnConnect.setOnClickListener { it.pulseOnce(); connectToSelected() }
         binding.autoReconnectSwitch.setOnCheckedChangeListener { _, isChecked ->
             service?.setAutoReconnectEnabled(isChecked)
         }
-        binding.btnConnectProfile.setOnClickListener { connectToSelectedProfile() }
+        binding.btnConnectProfile.setOnClickListener { it.pulseOnce(); connectToSelectedProfile() }
         binding.btnDeleteProfile.setOnClickListener { deleteSelectedProfile() }
-        binding.btnSaveProfile.setOnClickListener { saveCurrentAsProfile() }
+        binding.btnSaveProfile.setOnClickListener { it.pulseOnce(); saveCurrentAsProfile() }
     }
 
     private fun loadPairedDevices() {
@@ -127,15 +134,20 @@ class SettingsActivity : AppCompatActivity() {
             val bm = getSystemService(BluetoothManager::class.java)
             val bonded = bm.adapter?.bondedDevices?.toList() ?: emptyList()
             bonded.forEach { knownDevices[it.address] = it }
-            refreshDeviceSpinner()
+            refreshDeviceDropdown()
         } catch (e: SecurityException) { }
     }
 
-    private fun refreshDeviceSpinner() {
+    private fun refreshDeviceDropdown() {
         val devices = knownDevices.values.toList()
         val labels = devices.map { d -> try { d.name ?: d.address } catch (e: SecurityException) { d.address } }
-        binding.deviceSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, labels)
+        binding.deviceDropdown.setAdapter(ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, labels))
+        binding.deviceDropdown.setOnItemClickListener { _, _, position, _ -> selectedDevicePosition = position }
         deviceList = devices
+        if (devices.isNotEmpty() && selectedDevicePosition == -1) {
+            selectedDevicePosition = 0
+            binding.deviceDropdown.setText(labels[0], false)
+        }
     }
 
     private fun startScan() {
@@ -152,26 +164,27 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun connectToSelected() {
-        val index = binding.deviceSpinner.selectedItemPosition
-        if (index < 0 || index >= deviceList.size) {
+        val device = deviceList.getOrNull(selectedDevicePosition)
+        if (device == null) {
             Toast.makeText(this, getString(R.string.no_device_selected), Toast.LENGTH_SHORT).show()
             return
         }
-        service?.connectTo(deviceList[index])
+        service?.connectTo(device)
         Toast.makeText(this, getString(R.string.connecting), Toast.LENGTH_SHORT).show()
     }
 
-    private fun refreshProfilesSpinner() {
+    private fun refreshProfilesDropdown() {
         profiles = service?.listProfiles() ?: emptyList()
         binding.noProfilesText.visibility = if (profiles.isEmpty()) View.VISIBLE else View.GONE
-        binding.profilesSpinner.adapter = ArrayAdapter(
-            this, android.R.layout.simple_spinner_dropdown_item, profiles.map { it.name }
-        )
+        val labels = profiles.map { it.name }
+        binding.profilesDropdown.setAdapter(ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, labels))
+        binding.profilesDropdown.setOnItemClickListener { _, _, position, _ -> selectedProfilePosition = position }
+        selectedProfilePosition = if (labels.isNotEmpty()) 0 else -1
+        if (labels.isNotEmpty()) binding.profilesDropdown.setText(labels[0], false) else binding.profilesDropdown.setText("", false)
     }
 
     private fun connectToSelectedProfile() {
-        val index = binding.profilesSpinner.selectedItemPosition
-        val profile = profiles.getOrNull(index) ?: return
+        val profile = profiles.getOrNull(selectedProfilePosition) ?: return
         try {
             val bm = getSystemService(BluetoothManager::class.java)
             val device = bm.adapter?.getRemoteDevice(profile.address) ?: return
@@ -181,15 +194,13 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun deleteSelectedProfile() {
-        val index = binding.profilesSpinner.selectedItemPosition
-        val profile = profiles.getOrNull(index) ?: return
+        val profile = profiles.getOrNull(selectedProfilePosition) ?: return
         service?.removeProfile(profile.address)
-        refreshProfilesSpinner()
+        refreshProfilesDropdown()
     }
 
     private fun saveCurrentAsProfile() {
-        val index = binding.deviceSpinner.selectedItemPosition
-        val device = deviceList.getOrNull(index)
+        val device = deviceList.getOrNull(selectedDevicePosition)
         val name = binding.profileNameInput.text.toString().trim()
         if (device == null) {
             Toast.makeText(this, getString(R.string.no_device_selected), Toast.LENGTH_SHORT).show()
@@ -199,13 +210,14 @@ class SettingsActivity : AppCompatActivity() {
         service?.saveProfile(name, device.address)
         binding.profileNameInput.setText("")
         Toast.makeText(this, getString(R.string.profile_saved_toast, name), Toast.LENGTH_SHORT).show()
-        refreshProfilesSpinner()
+        refreshProfilesDropdown()
     }
 
     // --- Jiggle behavior ---------------------------------------------
 
     private fun setupJiggleSection() {
-        binding.jiggleModeGroup.setOnCheckedChangeListener { _, checkedId ->
+        binding.jiggleModeToggle.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (!isChecked) return@addOnButtonCheckedListener
             val mode = when (checkedId) {
                 R.id.mode_human -> JiggleMode.HUMAN_LIKE
                 R.id.mode_active -> JiggleMode.ACTIVE_WORK
@@ -214,6 +226,7 @@ class SettingsActivity : AppCompatActivity() {
             service?.setJiggleMode(mode)
         }
         binding.btnApplyInterval.setOnClickListener {
+            it.pulseOnce()
             val min = binding.minIntervalInput.text.toString().toIntOrNull()
             val max = binding.maxIntervalInput.text.toString().toIntOrNull()
             if (min == null || max == null) {
@@ -260,48 +273,6 @@ class SettingsActivity : AppCompatActivity() {
             binding.scheduleSwitch.isChecked, scheduleStartMin, scheduleEndMin,
             binding.scheduleWeekdaysCheckbox.isChecked
         )
-    }
-
-    // --- Identity ---------------------------------------------------
-
-    private fun setupIdentitySection() {
-        presetNames = resources.getStringArray(R.array.preset_mouse_names).toList()
-        val options = presetNames + getString(R.string.spoof_name_custom_option)
-        binding.spoofNameSpinner.adapter =
-            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, options)
-        binding.spoofNameSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                binding.spoofNameCustomInput.visibility =
-                    if (position == options.lastIndex) View.VISIBLE else View.GONE
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-        binding.btnApplyName.setOnClickListener {
-            val position = binding.spoofNameSpinner.selectedItemPosition
-            val name = if (position == options.lastIndex) {
-                binding.spoofNameCustomInput.text.toString().trim()
-            } else presetNames.getOrNull(position) ?: return@setOnClickListener
-            if (name.isBlank()) return@setOnClickListener
-            val ok = service?.spoofDeviceName(name) ?: false
-            Toast.makeText(
-                this,
-                if (ok) getString(R.string.name_applied_toast, name) else getString(R.string.missing_name_permission),
-                Toast.LENGTH_SHORT
-            ).show()
-            binding.nameReminderText.visibility = if (ok) View.VISIBLE else View.GONE
-            if (ok) binding.nameReminderText.text = getString(R.string.name_applied_reminder)
-            updateCurrentNameText()
-        }
-        binding.btnRestoreName.setOnClickListener {
-            service?.restoreDeviceName()
-            Toast.makeText(this, getString(R.string.name_restored_toast), Toast.LENGTH_SHORT).show()
-            updateCurrentNameText()
-        }
-    }
-
-    private fun updateCurrentNameText() {
-        val name = service?.currentAdapterName ?: return
-        binding.currentNameText.text = getString(R.string.current_name_prefix, name)
     }
 
     // --- Appearance ----------------------------------------------------

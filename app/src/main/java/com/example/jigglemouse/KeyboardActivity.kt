@@ -8,8 +8,6 @@ import android.os.Bundle
 import android.os.IBinder
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.example.jigglemouse.databinding.ActivityKeyboardBinding
@@ -36,13 +34,12 @@ class KeyboardActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val layoutLabels = listOf(getString(R.string.layout_us), getString(R.string.layout_tr))
-        binding.keyboardLayoutSpinner.adapter =
-            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, layoutLabels)
-        binding.keyboardLayoutSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                selectedLayout = if (position == 1) KeyboardLayout.TURKISH_Q else KeyboardLayout.US_QWERTY
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        binding.keyboardLayoutDropdown.setAdapter(
+            ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, layoutLabels)
+        )
+        binding.keyboardLayoutDropdown.setText(layoutLabels[0], false)
+        binding.keyboardLayoutDropdown.setOnItemClickListener { _, _, position, _ ->
+            selectedLayout = if (position == 1) KeyboardLayout.TURKISH_Q else KeyboardLayout.US_QWERTY
         }
 
         binding.keyboardInput.addTextChangedListener(object : TextWatcher {
@@ -60,10 +57,11 @@ class KeyboardActivity : AppCompatActivity() {
             }
         })
 
-        binding.btnBackspace.setOnClickListener { service?.hidCombo?.sendKey(HidCombo.KEY_BACKSPACE) }
-        binding.btnEnter.setOnClickListener { service?.hidCombo?.sendKey(HidCombo.KEY_ENTER) }
+        binding.btnBackspace.setOnClickListener { it.pulseOnce(); service?.hidCombo?.sendKey(HidCombo.KEY_BACKSPACE) }
+        binding.btnEnter.setOnClickListener { it.pulseOnce(); service?.hidCombo?.sendKey(HidCombo.KEY_ENTER) }
 
         bindService(Intent(this, JiggleService::class.java), serviceConnection, Context.BIND_AUTO_CREATE)
+        binding.root.fadeInUp()
     }
 
     private fun updateStatus() {

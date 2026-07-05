@@ -16,7 +16,6 @@
     <string name="no_bluetooth_adapter">No Bluetooth adapter</string>
     <string name="missing_scan_permission">Missing permission to scan for devices.</string>
     <string name="missing_paired_permission">Missing permission to read paired devices.</string>
-    <string name="missing_name_permission">Missing permission to change Bluetooth name.</string>
     <string name="paired_suffix"> (paired)</string>
     <string name="new_suffix"> (new)</string>
 
@@ -46,28 +45,7 @@
     <string name="interval_fixed_label">Jiggle every %1$ds</string>
     <string name="interval_range_label">Jiggle every %1$d–%2$ds</string>
     <string name="invalid_interval">Enter a valid whole number of seconds in both fields.</string>
-
-    <!-- Name spoofing -->
-    <string name="spoof_name_label">Bluetooth device name</string>
-    <string name="spoof_name_note">Changes your phone\'s Bluetooth name (visible to all Bluetooth devices, not just this connection) to look like a real mouse. Restore it when you\'re done.</string>
-    <string name="spoof_name_custom_hint">Enter a custom name</string>
-    <string name="spoof_name_custom_option">Custom…</string>
-    <string name="apply_name">Apply name</string>
-    <string name="restore_name">Restore original name</string>
-    <string name="current_name_prefix">Current Bluetooth name: %1$s</string>
-    <string name="name_applied_toast">Bluetooth name changed to %1$s</string>
-    <string name="name_applied_reminder">Now turn your phone\'s Bluetooth off and back on (Settings → Bluetooth) — many phones cache the old name until you do, even though the change succeeded.</string>
-    <string name="name_restored_toast">Restored original Bluetooth name</string>
-    <string-array name="preset_mouse_names">
-        <item>Logitech MK235 Wireless Combo</item>
-        <item>Logitech MK270 Wireless Combo</item>
-        <item>Microsoft Wireless Desktop 900</item>
-        <item>Dell Wireless Keyboard and Mouse KM636</item>
-        <item>HP Wireless Combo 850</item>
-        <item>Rapoo X1800S Combo</item>
-        <item>Logitech MK540 Advanced</item>
-        <item>Anker Wireless Combo</item>
-    </string-array>
+    <string name="apply_generic">Apply</string>
 
     <!-- Navigation -->
     <string name="open_trackpad">Open trackpad</string>
@@ -106,9 +84,7 @@
     <string name="onboarding_step1_desc">Bluetooth access is needed to connect to your computer.</string>
     <string name="btn_grant_permissions">Grant permissions</string>
     <string name="permissions_granted">Permissions granted ✓</string>
-    <string name="onboarding_step2_title">2. Device identity</string>
-    <string name="onboarding_step2_desc">Pick a name your computer will see — set this before connecting, since it can\'t be changed retroactively once paired. After applying, toggle your phone\'s Bluetooth off and on for it to actually take effect.</string>
-    <string name="onboarding_step3_title">3. Connect</string>
+    <string name="onboarding_step3_title">2. Connect</string>
     <string name="onboarding_step3_desc">Make sure your computer\'s Bluetooth is on and discoverable, then scan and connect.</string>
     <string name="btn_finish_setup">Finish setup</string>
     <string name="btn_skip_for_now">Skip for now</string>

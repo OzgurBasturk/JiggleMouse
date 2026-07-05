@@ -28,11 +28,14 @@ class MainActivity : AppCompatActivity() {
             binding.jiggleSwitch.isEnabled = local.isConnected
             binding.jiggleSwitch.isChecked = local.isJiggling
             highlightMode(local.jiggleMode)
-            binding.intervalSlider.values = listOf(
-                local.minIntervalSeconds.toFloat().coerceIn(1f, 300f),
-                local.maxIntervalSeconds.toFloat().coerceIn(1f, 300f)
-            )
-            updateIntervalLabel(local.minIntervalSeconds, local.maxIntervalSeconds)
+            val minSec = local.minIntervalSeconds.coerceIn(1, 300)
+            val maxSec = local.maxIntervalSeconds.coerceIn(1, 300)
+            try {
+                binding.intervalSlider.values = listOf(minSec, maxSec).sorted().map { it.toFloat() }
+            } catch (e: Exception) {
+                // Defensive: never let a stale/out-of-range persisted value crash the UI.
+            }
+            updateIntervalLabel(minSec, maxSec)
             setStatus(
                 when {
                     local.isConnected -> getString(R.string.connected_simple)
@@ -140,8 +143,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Gentle fade-in on load instead of an abrupt appearance.
-        binding.rootContent.alpha = 0f
-        binding.rootContent.animate().alpha(1f).setDuration(280).start()
+        binding.rootContent.fadeInUp()
 
         val intent = Intent(this, JiggleService::class.java)
         ContextCompat.startForegroundService(this, intent)
@@ -151,7 +153,7 @@ class MainActivity : AppCompatActivity() {
     private fun setStatus(text: String, connected: Boolean) {
         binding.statusText.text = text
         val color = if (connected) R.color.success else R.color.text_muted
-        binding.statusDot.background.setTint(ContextCompat.getColor(this, color))
+        binding.statusDot.background?.mutate()?.setTint(ContextCompat.getColor(this, color))
     }
 
     private fun updateIntervalLabel(min: Int, max: Int) {

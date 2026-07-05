@@ -14,7 +14,6 @@
     <string name="no_bluetooth_adapter">Bluetooth adaptörü bulunamadı</string>
     <string name="missing_scan_permission">Cihaz taramak için izin eksik.</string>
     <string name="missing_paired_permission">Eşleştirilmiş cihazları okumak için izin eksik.</string>
-    <string name="missing_name_permission">Bluetooth adını değiştirmek için izin eksik.</string>
     <string name="paired_suffix"> (eşleştirilmiş)</string>
     <string name="new_suffix"> (yeni)</string>
 
@@ -44,18 +43,7 @@
     <string name="interval_fixed_label">Her %1$d saniyede bir hareket</string>
     <string name="interval_range_label">Her %1$d–%2$d saniyede bir hareket</string>
     <string name="invalid_interval">Her iki alana da geçerli birer tam sayı saniye girin.</string>
-
-    <!-- Name spoofing -->
-    <string name="spoof_name_label">Bluetooth cihaz adı</string>
-    <string name="spoof_name_note">Telefonunuzun Bluetooth adını (yalnızca bu bağlantı için değil, tüm Bluetooth cihazlarına görünecek şekilde) gerçek bir fare gibi görünmesi için değiştirir. İşiniz bitince orijinal adı geri yükleyin.</string>
-    <string name="spoof_name_custom_hint">Özel bir isim girin</string>
-    <string name="spoof_name_custom_option">Özel…</string>
-    <string name="apply_name">Adı uygula</string>
-    <string name="restore_name">Orijinal adı geri yükle</string>
-    <string name="current_name_prefix">Mevcut Bluetooth adı: %1$s</string>
-    <string name="name_applied_toast">Bluetooth adı %1$s olarak değiştirildi</string>
-    <string name="name_applied_reminder">Şimdi telefonunuzun Bluetooth\'unu kapatıp tekrar açın (Ayarlar → Bluetooth) — değişiklik başarılı olsa da birçok telefon siz bunu yapana kadar eski ismi önbellekte tutar.</string>
-    <string name="name_restored_toast">Orijinal Bluetooth adı geri yüklendi</string>
+    <string name="apply_generic">Uygula</string>
 
     <!-- Navigation -->
     <string name="open_trackpad">Trackpad\'i aç</string>
@@ -94,9 +82,7 @@
     <string name="onboarding_step1_desc">Bilgisayarınıza bağlanmak için Bluetooth erişimi gerekir.</string>
     <string name="btn_grant_permissions">İzinleri ver</string>
     <string name="permissions_granted">İzinler verildi ✓</string>
-    <string name="onboarding_step2_title">2. Cihaz kimliği</string>
-    <string name="onboarding_step2_desc">Bilgisayarınızın göreceği bir isim seçin — eşleştirildikten sonra geriye dönük değiştirilemediği için bunu bağlanmadan önce ayarlayın. Uyguladıktan sonra gerçekten etkili olması için telefonunuzun Bluetooth\'unu kapatıp açın.</string>
-    <string name="onboarding_step3_title">3. Bağlan</string>
+    <string name="onboarding_step3_title">2. Bağlan</string>
     <string name="onboarding_step3_desc">Bilgisayarınızın Bluetooth\'unun açık ve keşfedilebilir olduğundan emin olun, sonra tarayıp bağlanın.</string>
     <string name="btn_finish_setup">Kurulumu tamamla</string>
     <string name="btn_skip_for_now">Şimdilik atla</string>

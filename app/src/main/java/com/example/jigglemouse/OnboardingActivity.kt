@@ -14,8 +14,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,7 +27,7 @@ class OnboardingActivity : AppCompatActivity() {
     private var service: JiggleService? = null
     private val knownDevices = LinkedHashMap<String, BluetoothDevice>()
     private var deviceList: List<BluetoothDevice> = emptyList()
-    private var presetNames: List<String> = emptyList()
+    private var selectedDevicePosition = -1
 
     private val requiredPermissions: Array<String>
         get() {
@@ -70,7 +68,7 @@ class OnboardingActivity : AppCompatActivity() {
                 BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
                     binding.btnScan.isEnabled = true
                     binding.btnScan.text = getString(R.string.scan)
-                    refreshSpinner()
+                    refreshDeviceDropdown()
                 }
             }
         }
@@ -79,7 +77,6 @@ class OnboardingActivity : AppCompatActivity() {
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
             service = (binder as JiggleService.LocalBinder).getService()
-            updateCurrentNameText()
             loadPairedDevices()
         }
         override fun onServiceDisconnected(name: ComponentName?) { service = null }
@@ -97,12 +94,13 @@ class OnboardingActivity : AppCompatActivity() {
             binding.permissionsStatusText.text = getString(R.string.permissions_granted)
             startAndBindService()
         }
-        binding.btnGrantPermissions.setOnClickListener { permissionLauncher.launch(requiredPermissions) }
+        binding.btnGrantPermissions.setOnClickListener {
+            it.pulseOnce()
+            permissionLauncher.launch(requiredPermissions)
+        }
 
-        setupIdentityStep()
-
-        binding.btnScan.setOnClickListener { startScan() }
-        binding.btnConnect.setOnClickListener { connectToSelected() }
+        binding.btnScan.setOnClickListener { it.pulseOnce(); startScan() }
+        binding.btnConnect.setOnClickListener { it.pulseOnce(); connectToSelected() }
         binding.btnFinishSetup.setOnClickListener { finishOnboarding() }
         binding.btnSkipForNow.setOnClickListener { finishOnboarding() }
 
@@ -110,41 +108,8 @@ class OnboardingActivity : AppCompatActivity() {
             addAction(BluetoothDevice.ACTION_FOUND)
             addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
         })
-    }
 
-    private fun setupIdentityStep() {
-        presetNames = resources.getStringArray(R.array.preset_mouse_names).toList()
-        val options = presetNames + getString(R.string.spoof_name_custom_option)
-        binding.spoofNameSpinner.adapter =
-            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, options)
-        binding.spoofNameSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                binding.spoofNameCustomInput.visibility =
-                    if (position == options.lastIndex) View.VISIBLE else View.GONE
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-        binding.btnApplyName.setOnClickListener {
-            val position = binding.spoofNameSpinner.selectedItemPosition
-            val name = if (position == options.lastIndex) {
-                binding.spoofNameCustomInput.text.toString().trim()
-            } else presetNames.getOrNull(position) ?: return@setOnClickListener
-            if (name.isBlank()) return@setOnClickListener
-            val ok = service?.spoofDeviceName(name) ?: false
-            Toast.makeText(
-                this,
-                if (ok) getString(R.string.name_applied_toast, name) else getString(R.string.missing_name_permission),
-                Toast.LENGTH_SHORT
-            ).show()
-            binding.nameReminderText.visibility = if (ok) View.VISIBLE else View.GONE
-            if (ok) binding.nameReminderText.text = getString(R.string.name_applied_reminder)
-            updateCurrentNameText()
-        }
-    }
-
-    private fun updateCurrentNameText() {
-        val name = service?.currentAdapterName ?: return
-        binding.currentNameText.text = getString(R.string.current_name_prefix, name)
+        binding.rootContent.fadeInUp()
     }
 
     private fun startAndBindService() {
@@ -158,15 +123,20 @@ class OnboardingActivity : AppCompatActivity() {
             val bm = getSystemService(BluetoothManager::class.java)
             val bonded = bm.adapter?.bondedDevices?.toList() ?: emptyList()
             bonded.forEach { knownDevices[it.address] = it }
-            refreshSpinner()
+            refreshDeviceDropdown()
         } catch (e: SecurityException) { /* no permission yet */ }
     }
 
-    private fun refreshSpinner() {
+    private fun refreshDeviceDropdown() {
         val devices = knownDevices.values.toList()
         val labels = devices.map { d -> try { d.name ?: d.address } catch (e: SecurityException) { d.address } }
-        binding.deviceSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, labels)
+        binding.deviceDropdown.setAdapter(ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, labels))
+        binding.deviceDropdown.setOnItemClickListener { _, _, position, _ -> selectedDevicePosition = position }
         deviceList = devices
+        if (devices.isNotEmpty() && selectedDevicePosition == -1) {
+            selectedDevicePosition = 0
+            binding.deviceDropdown.setText(labels[0], false)
+        }
     }
 
     private fun startScan() {
@@ -183,13 +153,13 @@ class OnboardingActivity : AppCompatActivity() {
     }
 
     private fun connectToSelected() {
-        val index = binding.deviceSpinner.selectedItemPosition
-        if (index < 0 || index >= deviceList.size) {
+        val device = deviceList.getOrNull(selectedDevicePosition)
+        if (device == null) {
             Toast.makeText(this, getString(R.string.no_device_selected), Toast.LENGTH_SHORT).show()
             return
         }
         binding.connectStatusText.text = getString(R.string.connecting)
-        service?.connectTo(deviceList[index])
+        service?.connectTo(device)
         service?.setStatusListener(object : JiggleService.StatusListener {
             override fun onConnectionState(deviceName: String, connected: Boolean) {
                 runOnUiThread {

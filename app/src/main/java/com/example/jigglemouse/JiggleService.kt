@@ -78,7 +78,7 @@ class JiggleService : Service(), HidCombo.Listener {
     }
 
     private fun startHidCombo() {
-        hidCombo = HidCombo(applicationContext, this, prefs.getString(KEY_SDP_NAME, "JiggleMouse Combo")!!)
+        hidCombo = HidCombo(applicationContext, this)
         hidCombo.start()
         // Safeguard: if registration never completes (a stuck Bluetooth
         // profile proxy is a known cause), tear down and retry once instead
@@ -100,7 +100,15 @@ class JiggleService : Service(), HidCombo.Listener {
             stopEverything()
             return START_NOT_STICKY
         }
-        startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.notif_ready)))
+        try {
+            startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.notif_ready)))
+        } catch (e: Exception) {
+            // Some Android versions can refuse a foreground service start in
+            // edge-case timing (e.g. right after first setup, before any
+            // Bluetooth activity has happened yet). Don't let that crash the
+            // app — the service still runs, just without the foreground
+            // guarantee until the next successful start attempt.
+        }
         return START_STICKY
     }
 
@@ -115,7 +123,7 @@ class JiggleService : Service(), HidCombo.Listener {
         stopJiggle()
         handler.removeCallbacksAndMessages(null)
         if (::hidCombo.isInitialized) hidCombo.stop()
-        stopForeground(STOP_FOREGROUND_REMOVE)
+        try { stopForeground(STOP_FOREGROUND_REMOVE) } catch (e: Exception) { }
         stopSelf()
     }
 
@@ -289,47 +297,6 @@ class JiggleService : Service(), HidCombo.Listener {
             nowMin >= scheduleStartMin || nowMin <= scheduleEndMin
         }
     }
-
-    // --- Bluetooth name spoofing -----------------------------------------
-    // NOTE: this only reliably shows up on a device your computer hasn't
-    // paired with yet — computers cache the name from first contact, so
-    // changing it after you're already bonded won't update what's displayed
-    // there. Set this before your first Connect for it to actually work.
-
-    fun spoofDeviceName(name: String): Boolean {
-        return try {
-            val bm = getSystemService(BluetoothManager::class.java)
-            val adapter = bm.adapter ?: return false
-            if (!prefs.contains(KEY_ORIGINAL_NAME)) {
-                prefs.edit().putString(KEY_ORIGINAL_NAME, adapter.name ?: "").apply()
-            }
-            val ok = adapter.setName(name)
-            if (ok) prefs.edit().putString(KEY_SDP_NAME, name).apply()
-            // NOTE: setName() succeeding does NOT guarantee the new name is
-            // broadcast to nearby devices immediately — on many phones the
-            // Bluetooth radio caches the old name in its inquiry response
-            // until Bluetooth is toggled off and on. The UI surfaces this
-            // as an explicit instruction after a successful name change.
-            ok
-        } catch (e: SecurityException) {
-            statusListener?.onError(getString(R.string.missing_name_permission))
-            false
-        }
-    }
-
-    fun restoreDeviceName() {
-        val original = prefs.getString(KEY_ORIGINAL_NAME, null) ?: return
-        try {
-            val bm = getSystemService(BluetoothManager::class.java)
-            bm.adapter?.setName(original)
-            prefs.edit().remove(KEY_ORIGINAL_NAME).apply()
-        } catch (e: SecurityException) {
-            // ignore
-        }
-    }
-
-    val currentAdapterName: String?
-        get() = try { (getSystemService(BluetoothManager::class.java)).adapter?.name } catch (e: SecurityException) { null }
 
     // --- Jiggle loop -------------------------------------------------
 
@@ -532,8 +499,12 @@ class JiggleService : Service(), HidCombo.Listener {
     }
 
     private fun updateNotification(text: String) {
-        val nm = getSystemService(NotificationManager::class.java)
-        nm.notify(NOTIFICATION_ID, buildNotification(text))
+        try {
+            val nm = getSystemService(NotificationManager::class.java)
+            nm.notify(NOTIFICATION_ID, buildNotification(text))
+        } catch (e: Exception) {
+            // Never let a routine status update crash the app.
+        }
     }
 
     override fun onDestroy() {
@@ -547,8 +518,6 @@ class JiggleService : Service(), HidCombo.Listener {
         const val ACTION_STOP = "com.example.jigglemouse.ACTION_STOP"
         private const val CHANNEL_ID = "jiggle_status"
         private const val NOTIFICATION_ID = 1
-        private const val KEY_ORIGINAL_NAME = "original_bt_name"
-        private const val KEY_SDP_NAME = "sdp_name"
         private const val KEY_MODE = "jiggle_mode"
         private const val KEY_MIN_MS = "min_interval_ms"
         private const val KEY_MAX_MS = "max_interval_ms"

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
 <LinearLayout
+    android:id="@+id/root_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -12,7 +15,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
+        android:textSize="26sp"
         android:textStyle="bold"
         android:text="@string/onboarding_welcome" />
 
@@ -21,183 +24,187 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textSize="14sp"
+        android:lineSpacingExtra="3dp"
         android:textColor="@color/text_muted"
         android:text="@string/onboarding_intro" />
 
-    <Space android:layout_width="match_parent" android:layout_height="24dp" />
+    <Space android:layout_width="match_parent" android:layout_height="28dp" />
 
     <!-- Step 1: Permissions -->
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/bg_card"
-        android:elevation="2dp"
-        android:padding="16dp">
+        app:cardCornerRadius="20dp"
+        app:cardElevation="3dp"
+        app:strokeWidth="0dp">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:text="@string/onboarding_step1_title" />
+            android:orientation="vertical"
+            android:padding="18dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textSize="13sp"
-            android:textColor="@color/text_muted"
-            android:text="@string/onboarding_step1_desc" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-        <Button
-            android:id="@+id/btn_grant_permissions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="@string/btn_grant_permissions" />
+                <TextView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_step_badge"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:text="1" />
 
-        <TextView
-            android:id="@+id/permissions_status_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="13sp"
-            android:textColor="@color/success" />
-    </LinearLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:text="@string/onboarding_step1_title" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="40dp"
+                android:textSize="13sp"
+                android:lineSpacingExtra="2dp"
+                android:textColor="@color/text_muted"
+                android:text="@string/onboarding_step1_desc" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_grant_permissions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                app:cornerRadius="14dp"
+                android:text="@string/btn_grant_permissions" />
+
+            <TextView
+                android:id="@+id/permissions_status_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/success" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <Space android:layout_width="match_parent" android:layout_height="16dp" />
 
-    <!-- Step 2: Identity -->
-    <LinearLayout
+    <!-- Step 2: Connect -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/bg_card"
-        android:elevation="2dp"
-        android:padding="16dp">
+        app:cardCornerRadius="20dp"
+        app:cardElevation="3dp"
+        app:strokeWidth="0dp">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:text="@string/onboarding_step2_title" />
+            android:orientation="vertical"
+            android:padding="18dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textSize="13sp"
-            android:textColor="@color/text_muted"
-            android:text="@string/onboarding_step2_desc" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-        <Spinner
-            android:id="@+id/spoof_name_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp" />
+                <TextView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_step_badge"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:text="2" />
 
-        <EditText
-            android:id="@+id/spoof_name_custom_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"
-            android:hint="@string/spoof_name_custom_hint" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:text="@string/onboarding_step3_title" />
+            </LinearLayout>
 
-        <Button
-            android:id="@+id/btn_apply_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/apply_name" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="40dp"
+                android:textSize="13sp"
+                android:lineSpacingExtra="2dp"
+                android:textColor="@color/text_muted"
+                android:text="@string/onboarding_step3_desc" />
 
-        <TextView
-            android:id="@+id/current_name_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:textSize="12sp"
-            android:textColor="@color/text_muted" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_scan"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                app:cornerRadius="14dp"
+                android:text="@string/scan" />
 
-        <TextView
-            android:id="@+id/name_reminder_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
-            android:textColor="@color/warning_text"
-            android:background="@color/warning_bg"
-            android:padding="10dp"
-            android:visibility="gone" />
-    </LinearLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
-    <Space android:layout_width="match_parent" android:layout_height="16dp" />
+                <AutoCompleteTextView
+                    android:id="@+id/device_dropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:focusable="false" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Step 3: Connect -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/bg_card"
-        android:elevation="2dp"
-        android:padding="16dp">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_connect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:cornerRadius="14dp"
+                android:text="@string/connect" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:text="@string/onboarding_step3_title" />
+            <TextView
+                android:id="@+id/connect_status_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textSize="13sp"
-            android:textColor="@color/text_muted"
-            android:text="@string/onboarding_step3_desc" />
+    <Space android:layout_width="match_parent" android:layout_height="28dp" />
 
-        <Button
-            android:id="@+id/btn_scan"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="@string/scan" />
-
-        <Spinner
-            android:id="@+id/device_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
-
-        <Button
-            android:id="@+id/btn_connect"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/connect" />
-
-        <TextView
-            android:id="@+id/connect_status_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="13sp" />
-    </LinearLayout>
-
-    <Space android:layout_width="match_parent" android:layout_height="24dp" />
-
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_finish_setup"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
+        app:cornerRadius="16dp"
+        android:textSize="15sp"
         android:text="@string/btn_finish_setup" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_skip_for_now"
-        style="?android:attr/buttonBarButtonStyle"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
